@@ -2,556 +2,628 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SimplyDoors v2.5 (PDF Edition)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoelscher Mahogany v23.1 (Strict Size Fix)</title>
     <style>
         /* --- CORE THEME --- */
-        :root {
-            --primary: #3e2723; /* Dark Mahogany */
-            --accent: #8d6e63;
-            --bg: #f8f9fa;
-            --white: #ffffff;
-            --text-dark: #212529;
-            --text-light: #6c757d;
-            --border: #dee2e6;
-            --active-bg: #e9ecef;
-        }
-
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text-dark); margin: 0; padding: 20px; padding-bottom: 80px; }
+        :root { --primary: #4e342e; --accent: #8d6e63; --bg: #f8f9fa; --white: #ffffff; --text: #212529; --border: #dee2e6; --muted: #6c757d; }
+        body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; padding-bottom: 120px; }
         * { box-sizing: border-box; }
+        .container { max-width: 1100px; margin: 0 auto; }
 
-        header { text-align: center; margin-bottom: 25px; background: var(--white); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        h1 { margin: 0; font-size: 1.5rem; color: var(--primary); letter-spacing: -0.5px; }
-        .subtitle { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; font-weight: 700; margin-top: 5px; }
+        /* --- HEADER --- */
+        header { text-align: center; margin-bottom: 30px; background: var(--white); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
+        h1 { margin: 0; font-size: 2.2rem; color: var(--primary); font-weight: 800; letter-spacing: -0.5px; }
+        .subtitle { font-size: 1rem; color: var(--muted); font-weight: 600; letter-spacing: 1px; margin-top: 8px; }
+        .cart-badge { position: absolute; right: 30px; top: 30px; background: var(--primary); color: white; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: 0.2s; }
+        .cart-badge:hover { background: #3e2723; transform: scale(1.05); }
 
-        .container { max-width: 800px; margin: 0 auto; }
-        
         /* --- GRIDS --- */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .list-grid { display: grid; gap: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
 
         /* --- CARDS --- */
-        .card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
-        .card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .card-title { font-weight: 700; font-size: 0.9rem; color: var(--primary); display: block; margin-top: 10px; line-height: 1.2; }
-        
-        /* --- BUTTONS --- */
-        .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; margin-top: 20px; cursor: pointer; }
-        .btn-secondary { background: #fff; color: var(--text-dark); border: 1px solid var(--border); margin-top: 10px; }
+        .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        .card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .card.selected { border: 2px solid var(--primary); background: #fff8f6; }
+        .card-img { width: 100%; height: 150px; object-fit: contain; border-radius: 8px; margin-bottom: 12px; background: #fff; } 
+        .card-icon { width: 60px; height: 60px; margin-bottom: 10px; }
+        .card-title { font-weight: 700; font-size: 1.05rem; color: var(--primary); margin-bottom: 5px; }
+        .card-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.4; }
+        .card-price { font-size: 0.95rem; color: var(--primary); font-weight: 700; margin-top: auto; padding-top: 10px; }
 
-        /* --- NAVIGATION --- */
-        .nav-header { display: flex; align-items: center; margin-bottom: 15px; }
-        .back-btn { background: none; border: none; font-size: 1.2rem; color: var(--primary); font-weight: 700; cursor: pointer; padding-right: 10px; }
-        .page-title { flex: 1; text-align: center; font-weight: 700; color: var(--text-light); font-size: 1rem; }
+        /* --- SECTIONS & LABELS --- */
+        .section-title { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+        .opt-label { font-size: 0.9rem; font-weight: 700; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 12px; letter-spacing: 0.5px; }
 
-        /* --- SVG STYLES --- */
-        svg { display: block; margin: 0 auto; }
-        .svg-line { fill: none; stroke: #333; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .svg-fill { fill: #fff; stroke: #333; stroke-width: 2; }
-        .svg-label { font-family: sans-serif; font-size: 10px; fill: #999; text-anchor: middle; font-weight: bold; }
-        .swing-path { fill: none; stroke: var(--primary); stroke-width: 1.5; stroke-dasharray: 4; marker-end: url(#arrow); }
-        .wall-line { stroke: #ccc; stroke-width: 4; }
+        /* --- HARDWARE SWATCHES --- */
+        .swatch-container { display: flex; gap: 15px; flex-wrap: wrap; }
+        .swatch-opt { cursor: pointer; border: 1px solid var(--border); padding: 10px; border-radius: 10px; text-align: center; background: var(--white); transition: 0.2s; flex: 1; min-width: 100px; display: flex; flex-direction: column; align-items: center; }
+        .swatch-opt:hover { transform: translateY(-2px); border-color: var(--primary); }
+        .swatch-opt.selected { border: 2px solid var(--primary); background: #fff8f6; }
+        .swatch-color { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 8px; box-shadow: inset 0 0 4px rgba(0,0,0,0.2); border: 1px solid #ddd; }
+        .swatch-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
 
-        /* --- OPTIONS --- */
-        .opt-group { margin-bottom: 20px; text-align: left; }
-        .opt-label { font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; display: block; margin-bottom: 8px; }
-        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; }
-        .chip { padding: 8px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; background: white; color: var(--text-dark); }
-        .chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        /* --- UI ELEMENTS --- */
+        .nav-header { display: flex; align-items: center; margin-bottom: 25px; }
+        .back-btn { background: none; border: none; font-size: 2rem; color: var(--primary); cursor: pointer; padding-right: 20px; font-weight: bold; line-height: 1; }
+        .page-title { flex: 1; text-align: left; font-weight: 800; font-size: 1.6rem; color: var(--primary); }
 
-        /* --- LIVE PRICE BAR --- */
-        .price-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #ddd; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; }
-        .pb-label { font-size: 0.8rem; color: #666; font-weight: 600; text-transform: uppercase; }
-        .pb-val { font-size: 1.4rem; color: var(--primary); font-weight: 800; }
+        .btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 25px; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #3e2723; }
+        .btn-secondary { background: #fff; color: #333; border: 2px solid #eee; margin-top: 10px; }
+        .btn-secondary:hover { background: #f9f9f9; border-color: #ddd; }
 
-        /* --- VIEWS --- */
-        .view { display: none; animation: fadeIn 0.25s ease-out; }
-        .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- ANIMATIONS --- */
+        .view { display: none; }
+        .view.active { display: block; animation: fadeUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 
-        /* --- REVIEW --- */
-        .review-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .review-table td { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
-        .r-label { font-weight: 600; color: var(--text-light); width: 35%; }
-        .r-val { text-align: right; color: var(--text-dark); font-weight: 500; }
-        
-        .sku-box { 
-            background: #e3f2fd; 
-            color: #0d47a1; 
-            font-family: monospace; 
-            padding: 10px; 
-            border-radius: 6px; 
-            font-weight: 700; 
-            display: block; 
-            margin-top: 5px; 
-            border: 1px solid #bbdefb;
-            font-size: 1.1rem;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-        .line-item { font-size:0.85rem; color:#555; display:flex; justify-content:space-between; margin-top:4px; }
-        
-        /* --- PRINT / PDF STYLES --- */
-        #print-header { display: none; }
-        
+        /* --- REVIEW TABLE --- */
+        .review-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .review-table td { padding: 18px 25px; border-bottom: 1px solid #eee; font-size: 1rem; vertical-align: top; }
+        .review-table tr:last-child td { border-bottom: none; }
+        .r-label { font-weight: 600; color: var(--muted); width: 35%; }
+        .r-val { text-align: right; font-weight: 700; color: var(--text); }
+        .total-row { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding: 25px; background: var(--white); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .total-price { font-size: 2.4rem; font-weight: 800; color: var(--primary); }
+
+        /* --- PRINT --- */
+        .print-header, .print-footer { display: none; }
         @media print {
-            body { background: white; padding: 0; font-size: 12pt; color: black; -webkit-print-color-adjust: exact; }
-            header, .nav-header, .btn, .btn-secondary, .price-bar, .subtitle, .chip-container, .opt-group, #hint-text { display: none !important; }
-            .container { max-width: 100% !important; width: 100% !important; margin: 0; }
-            .card { border: none; box-shadow: none; padding: 0; margin: 0 !important; }
-            .view { display: none; }
-            #v-review { display: block !important; }
-            
-            #print-header { display: block; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 20px; }
-            #print-header h1 { color: #000; font-size: 24pt; margin: 0; }
-            #print-header p { margin: 5px 0 0 0; color: #555; }
-            
-            .sku-box { background: #fff !important; border: 2px solid #000; color: #000; font-size: 14pt; padding: 15px; margin-bottom: 20px; }
-            .review-table td { border-bottom: 1px solid #ccc; padding: 10px 0; color: #000 !important; }
-            .r-label { color: #000; }
-            .total-row { border-top: 3px solid #000; }
-            .total-price { color: #000; }
+            body { background: white; color: black; padding: 0; }
+            header, .nav-header, .btn, .btn-secondary, .subtitle, .cart-badge { display: none !important; }
+            .container { max-width: 100%; margin: 0; }
+            .card, .review-table, .total-row { border: 1px solid #000; box-shadow: none; background: none; }
+            .print-header { display: block !important; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+            .print-footer { display: block !important; margin-top: 50px; font-size: 0.8rem; color: #000; text-align: center; border-top: 1px solid #000; padding-top: 10px; }
         }
     </style>
 </head>
 <body>
 
-<svg style="display:none;">
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="var(--primary)" />
-    </marker>
-  </defs>
-</svg>
-
-<div id="print-header">
-    <h1>SimplyDoors Order Ticket</h1>
-    <p id="print-date"></p>
-</div>
-
 <header>
-    <h1>SimplyDoors</h1>
-    <div class="subtitle">Dealer Configurator v2.5</div>
+    <h1>Hoelscher Entry Systems</h1>
+    <div class="subtitle">Mahogany Collection v23.1</div>
+    <div class="cart-badge" onclick="app.nav('v-cart')"><span>🛒 View Cart</span><span id="cart-count">(0)</span></div>
 </header>
 
 <div class="container">
 
-    <div id="v-material" class="view active">
-        <div class="opt-label" style="text-align:center;">Select Material</div>
-        <div class="grid-2">
-            <div class="card" onclick="app.setMaterial('Mahogany')">
-                <div style="height:60px; background:#4e342e; border-radius:6px; margin-bottom:10px;"></div>
-                <span class="card-title">Mahogany</span>
-            </div>
-            <div class="card" onclick="app.setMaterial('Knotty Alder')">
-                <div style="height:60px; background:#8d6e63; border-radius:6px; margin-bottom:10px;"></div>
-                <span class="card-title">Knotty Alder</span>
-            </div>
-        </div>
+    <div class="print-header">
+        <h2 style="margin:0;">Purchase Order</h2>
+        <div style="font-size:0.9rem; margin-top:5px;" id="print-date"></div>
     </div>
 
-    <div id="v-height" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Height</span></div>
-        <div class="grid-2">
-            <div class="card" onclick="app.setHeight(68)"><span class="card-title" style="font-size:2rem;">6'8"</span></div>
-            <div class="card" onclick="app.setHeight(80)"><span class="card-title" style="font-size:2rem;">8'0"</span></div>
-        </div>
-    </div>
-
-    <div id="v-width" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Width</span></div>
-        <div class="grid-3" id="width-grid"></div>
-    </div>
-
-    <div id="v-config" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Configuration</span></div>
-        <div class="grid-3" id="config-grid"></div>
-    </div>
-
-    <div id="v-swing" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Handing & Swing</span></div>
-        <div class="grid-2">
-            <div class="card" onclick="app.setSwing('LH Inswing')">
-                <svg width="100" height="100" viewBox="0 0 100 100">
-                    <text x="50" y="15" class="svg-label">INTERIOR</text>
-                    <line x1="10" y1="50" x2="90" y2="50" class="wall-line" />
-                    <text x="50" y="90" class="svg-label">EXTERIOR</text>
-                    <rect x="20" y="48" width="4" height="4" fill="#000" />
-                    <rect x="20" y="20" width="4" height="30" fill="var(--primary)" transform="rotate(-45 22 50)" />
-                    <path d="M22 20 A30 30 0 0 1 52 50" class="swing-path" />
-                </svg>
-                <span class="card-title">Left Hand Inswing</span>
-            </div>
-            <div class="card" onclick="app.setSwing('RH Inswing')">
-                <svg width="100" height="100" viewBox="0 0 100 100">
-                    <text x="50" y="15" class="svg-label">INTERIOR</text>
-                    <line x1="10" y1="50" x2="90" y2="50" class="wall-line" />
-                    <text x="50" y="90" class="svg-label">EXTERIOR</text>
-                    <rect x="76" y="48" width="4" height="4" fill="#000" />
-                    <rect x="76" y="20" width="4" height="30" fill="var(--primary)" transform="rotate(45 78 50)" />
-                    <path d="M78 20 A30 30 0 0 0 48 50" class="swing-path" />
-                </svg>
-                <span class="card-title">Right Hand Inswing</span>
-            </div>
-            <div class="card" onclick="app.setSwing('LH Outswing')">
-                <svg width="100" height="100" viewBox="0 0 100 100">
-                    <text x="50" y="15" class="svg-label">INTERIOR</text>
-                    <line x1="10" y1="50" x2="90" y2="50" class="wall-line" />
-                    <text x="50" y="90" class="svg-label">EXTERIOR</text>
-                    <rect x="20" y="48" width="4" height="4" fill="#000" />
-                    <rect x="20" y="50" width="4" height="30" fill="var(--primary)" transform="rotate(45 22 50)" />
-                    <path d="M22 50 L22 80 A30 30 0 0 0 52 50" class="swing-path" />
-                </svg>
-                <span class="card-title">Left Hand Outswing</span>
-            </div>
-            <div class="card" onclick="app.setSwing('RH Outswing')">
-                <svg width="100" height="100" viewBox="0 0 100 100">
-                    <text x="50" y="15" class="svg-label">INTERIOR</text>
-                    <line x1="10" y1="50" x2="90" y2="50" class="wall-line" />
-                    <text x="50" y="90" class="svg-label">EXTERIOR</text>
-                    <rect x="76" y="48" width="4" height="4" fill="#000" />
-                    <rect x="76" y="50" width="4" height="30" fill="var(--primary)" transform="rotate(-45 78 50)" />
-                    <path d="M78 80 A30 30 0 0 1 48 50" class="swing-path" />
-                </svg>
-                <span class="card-title">Right Hand Outswing</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="v-category" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Collection</span></div>
-        <div class="grid-3" id="cat-grid"></div>
-    </div>
-
-    <div id="v-doors" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Select Door</span></div>
-        <div class="list-grid" id="door-list"></div>
-    </div>
-
-    <div id="v-options" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Options</span></div>
-        <div class="card" style="text-align:left; cursor:default; margin-bottom:60px;">
-            <h3 id="opt-door-name" style="margin:0 0 5px 0; color:#3e2723;">--</h3>
-            <div id="opt-config-name" style="font-size:0.8rem; color:#666; margin-bottom:20px;">--</div>
-
-            <div class="opt-group">
-                <span class="opt-label">Finish</span>
-                <div class="chip-container">
-                    <div class="chip selected" id="fin-unf" onclick="app.setOpt('finish', 'unf')">Unfinished</div>
-                    <div class="chip" id="fin-pre" onclick="app.setOpt('finish', 'pre')">Prefinished</div>
-                </div>
-            </div>
-
-            <div class="opt-group" id="stain-group" style="display:none;">
-                <span class="opt-label">Stain Color</span>
-                <div class="chip-container" id="stain-list"></div>
-            </div>
-
-            <div class="opt-group" id="glass-group" style="display:none;">
-                <span class="opt-label">Glass</span>
-                <div class="chip-container" style="margin-bottom:10px;">
-                    <div class="chip selected" id="gl-open" onclick="app.setOpt('glass', 'open')">Open</div>
-                    <div class="chip" id="gl-install" onclick="app.setOpt('glass', 'install')">With Glass</div>
-                </div>
-                <select id="glass-texture" onchange="app.setOpt('texture', this.value)" style="width:100%; padding:10px; border:1px solid #ddd; display:none;"></select>
-            </div>
-
-            <div class="opt-group" id="caming-group" style="display:none;">
-                <span class="opt-label">Caming</span>
-                <div class="chip-container">
-                    <div class="chip selected" id="cam-patina" onclick="app.setOpt('caming', 'Patina')">Patina</div>
-                    <div class="chip" id="cam-zinc" onclick="app.setOpt('caming', 'Zinc')">Zinc</div>
-                </div>
-            </div>
-
-            <button class="btn" onclick="app.renderReview()">Review Order</button>
-        </div>
+    <div id="v-size-config" class="view active">
+        <div class="section-title">Step 1: Size & Configuration</div>
         
-        <div id="live-price-bar" class="price-bar">
-            <span class="pb-label">Est. Total</span>
-            <span class="pb-val" id="opt-live-price">$0</span>
+        <div style="margin-bottom: 30px;">
+            <span class="opt-label">Select Unit Height</span>
+            <div class="grid-2">
+                <div class="card" onclick="app.setHeight(80)" id="h-80">
+                    <span class="card-title" style="font-size:2rem;">80"</span><span class="card-desc">(6'8")</span>
+                </div>
+                <div class="card" onclick="app.setHeight(96)" id="h-96">
+                    <span class="card-title" style="font-size:2rem;">96"</span><span class="card-desc">(8'0")</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="width-section" style="display:none; margin-bottom: 30px;">
+            <span class="opt-label">Select Door Width</span>
+            <div class="grid-4" id="width-grid"></div>
+        </div>
+
+        <div id="config-section" style="display:none;">
+            <span class="opt-label">Select Configuration</span>
+            <div class="grid-3" id="config-grid"></div>
         </div>
     </div>
 
-    <div id="v-review" class="view">
-        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Summary</span></div>
-        <div class="card" style="text-align:left; cursor:default;">
-            <div id="review-content"></div>
-            <div class="total-row">
-                <span style="font-weight:bold; color:#555;">Final List Price</span>
-                <span class="total-price" id="total-price">$0</span>
+    <div id="v-hardware" class="view">
+        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Step 2: Handing & Hardware</span></div>
+
+        <div style="margin-bottom: 30px;">
+            <span class="opt-label">Select Handing</span>
+            <div class="grid-4">
+                <div class="card" onclick="app.setHanding('LH Inswing')" id="hand-lhi"><span class="card-title">LH Inswing</span></div>
+                <div class="card" onclick="app.setHanding('RH Inswing')" id="hand-rhi"><span class="card-title">RH Inswing</span></div>
+                <div class="card" onclick="app.setHanding('LH Outswing')" id="hand-lho"><span class="card-title">LH Outswing</span></div>
+                <div class="card" onclick="app.setHanding('RH Outswing')" id="hand-rho"><span class="card-title">RH Outswing</span></div>
             </div>
-            
-            <button class="btn" onclick="window.print()">Download / Print Order PDF</button>
-            <div id="hint-text" style="text-align:center; font-size:0.8rem; color:#666; margin-top:5px;">(Select "Save to Files" or "Save as PDF" in dialog)</div>
-            
-            <button class="btn btn-secondary" onclick="app.goHome()">Start Over</button>
         </div>
+
+        <div style="margin-bottom: 30px;">
+            <span class="opt-label">Jamb Depth</span>
+            <div class="grid-2">
+                <div class="card selected" onclick="app.setOption('jamb', '4', this)" id="jamb-4">
+                    <img src="https://placehold.co/400x120/EEE/31343C?text=4-9/16%22+Jamb" class="card-img" style="height:100px; object-fit:contain; margin-bottom:10px; background:white;" alt="4 9/16 Jamb">
+                    <span class="card-title">4 9/16"</span>
+                </div>
+                <div class="card" onclick="app.setOption('jamb', '6', this)" id="jamb-6">
+                    <img src="https://placehold.co/400x120/EEE/31343C?text=6-9/16%22+Jamb" class="card-img" style="height:100px; object-fit:contain; margin-bottom:10px; background:white;" alt="6 9/16 Jamb">
+                    <span class="card-title">6 9/16"</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 30px;">
+            <div>
+                <span class="opt-label">Threshold Color</span>
+                <div class="swatch-container" id="threshold-list"></div>
+            </div>
+            <div>
+                <span class="opt-label">Hinge Color</span>
+                <div class="swatch-container" id="hinge-list"></div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="app.nav('v-collection')">Continue to Door Selection</button>
+    </div>
+
+    <div id="v-collection" class="view">
+        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Step 3: Door Collection</span></div>
+        <div class="grid-3" id="collection-grid"></div>
+    </div>
+
+    <div id="v-model-glass" class="view">
+        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title" id="model-glass-title">Step 4: Select Model</span></div>
+        
+        <div id="model-section">
+            <div class="grid-3" id="model-grid"></div>
+        </div>
+
+        <div id="glass-section" style="display:none; margin-top: 40px;">
+            <div class="section-title">Glass Selection</div>
+            <div id="glass-options-container"></div>
+        </div>
+    </div>
+
+    <div id="v-summary" class="view">
+        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Summary & Review</span></div>
+        <div id="summary-content"></div>
+        <div class="total-row">
+            <span style="font-weight:bold; color:var(--muted); font-size: 1.2rem;">Total Price</span>
+            <span class="total-price" id="total-price">$0</span>
+        </div>
+        <button class="btn" onclick="app.addToCart()">+ Add to Order</button>
+    </div>
+
+    <div id="v-cart" class="view">
+        <div class="nav-header"><button class="back-btn" onclick="app.back()">←</button><span class="page-title">Your Order</span></div>
+        <div id="cart-container"></div>
+    </div>
+
+    <div class="print-footer">
+        Warranty: 1 Year Limited (Wood Doors) • 2 Year Limited (Insulated Glass)<br>
+        Hoelscher Weatherstrip Mfg. Co. | 2400 S. Persimmon St, Tomball, TX 77375
     </div>
 
 </div>
 
 <script>
-// --- ICONS ---
+/* --- ICONS --- */
 const svgs = {
-    c1: `<svg width="60" height="60" viewBox="0 0 60 60"><rect x="20" y="10" width="20" height="40" class="svg-fill"/></svg>`,
-    c2: `<svg width="60" height="60" viewBox="0 0 60 60"><rect x="15" y="10" width="20" height="40" class="svg-fill"/><rect x="37" y="10" width="8" height="40" class="svg-fill"/></svg>`,
-    c3: `<svg width="60" height="60" viewBox="0 0 60 60"><rect x="5" y="10" width="8" height="40" class="svg-fill"/><rect x="15" y="10" width="30" height="40" class="svg-fill"/><rect x="47" y="10" width="8" height="40" class="svg-fill"/></svg>`,
-    c4: `<svg width="60" height="60" viewBox="0 0 60 60"><rect x="5" y="0" width="50" height="8" class="svg-fill"/><rect x="5" y="10" width="8" height="40" class="svg-fill"/><rect x="15" y="10" width="30" height="40" class="svg-fill"/><rect x="47" y="10" width="8" height="40" class="svg-fill"/></svg>`,
-    c5: `<svg width="60" height="60" viewBox="0 0 60 60"><path d="M5 10 Q30 -5 55 10 L55 8 L5 8 Z" class="svg-fill"/><rect x="5" y="10" width="8" height="40" class="svg-fill"/><rect x="15" y="10" width="30" height="40" class="svg-fill"/><rect x="47" y="10" width="8" height="40" class="svg-fill"/></svg>`,
-    c6: `<svg width="60" height="60" viewBox="0 0 60 60"><path d="M5 10 Q30 -10 55 10 L55 8 L5 8 Z" class="svg-fill"/><rect x="5" y="10" width="8" height="40" class="svg-fill"/><rect x="15" y="10" width="30" height="40" class="svg-fill"/><rect x="47" y="10" width="8" height="40" class="svg-fill"/></svg>`,
-    c7: `<svg width="60" height="60" viewBox="0 0 60 60"><path d="M5 10 A25 25 0 0 1 55 10 L5 10 Z" class="svg-fill"/><rect x="5" y="10" width="8" height="40" class="svg-fill"/><rect x="15" y="10" width="30" height="40" class="svg-fill"/><rect x="47" y="10" width="8" height="40" class="svg-fill"/></svg>`,
-    c8: `<svg width="60" height="60" viewBox="0 0 60 60"><rect x="8" y="10" width="20" height="40" class="svg-fill"/><rect x="30" y="10" width="20" height="40" class="svg-fill"/></svg>`,
-    c9: `<svg width="60" height="60" viewBox="0 0 60 60"><rect x="8" y="0" width="42" height="8" class="svg-fill"/><rect x="8" y="10" width="20" height="40" class="svg-fill"/><rect x="30" y="10" width="20" height="40" class="svg-fill"/></svg>`,
-    c10: `<svg width="60" height="60" viewBox="0 0 60 60"><path d="M8 10 Q29 -5 50 10" class="svg-fill" style="fill:none;"/><rect x="8" y="10" width="20" height="40" class="svg-fill"/><rect x="30" y="10" width="20" height="40" class="svg-fill"/><path d="M8 10 Q29 -5 50 10 L50 8 Q29 -7 8 8 Z" class="svg-fill"/></svg>`,
-    c11: `<svg width="60" height="60" viewBox="0 0 60 60"><path d="M8 10 Q29 -10 50 10 L50 8 Q29 -12 8 8 Z" class="svg-fill"/><rect x="8" y="10" width="20" height="40" class="svg-fill"/><rect x="30" y="10" width="20" height="40" class="svg-fill"/><path d="M8 10 Q29 -10 50 10 L50 8 Q29 -12 8 8 Z" class="svg-fill"/></svg>`,
-    c12: `<svg width="60" height="60" viewBox="0 0 60 60"><path d="M8 10 A21 21 0 0 1 50 10 L8 10 Z" class="svg-fill"/><rect x="8" y="10" width="20" height="40" class="svg-fill"/><rect x="30" y="10" width="20" height="40" class="svg-fill"/><path d="M8 10 A21 21 0 0 1 50 10 L8 10 Z" class="svg-fill"/></svg>`
+    c1: '<svg viewBox="0 0 50 100" class="card-icon"><rect x="5" y="5" width="40" height="90" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="38" cy="50" r="3" fill="#4e342e"/></svg>',
+    c2: '<svg viewBox="0 0 80 100" class="card-icon"><rect x="5" y="5" width="40" height="90" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="38" cy="50" r="3" fill="#4e342e"/><rect x="50" y="5" width="25" height="90" fill="none" stroke="#4e342e" stroke-width="2"/></svg>',
+    c3: '<svg viewBox="0 0 110 100" class="card-icon"><rect x="35" y="5" width="40" height="90" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="68" cy="50" r="3" fill="#4e342e"/><rect x="5" y="5" width="25" height="90" fill="none" stroke="#4e342e" stroke-width="2"/><rect x="80" y="5" width="25" height="90" fill="none" stroke="#4e342e" stroke-width="2"/></svg>',
+    c4: '<svg viewBox="0 0 110 120" class="card-icon"><rect x="5" y="5" width="100" height="20" fill="none" stroke="#4e342e" stroke-width="2"/><rect x="35" y="30" width="40" height="85" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="68" cy="75" r="3" fill="#4e342e"/><rect x="5" y="30" width="25" height="85" fill="none" stroke="#4e342e" stroke-width="2"/><rect x="80" y="30" width="25" height="85" fill="none" stroke="#4e342e" stroke-width="2"/></svg>',
+    c8: '<svg viewBox="0 0 90 100" class="card-icon"><rect x="5" y="5" width="40" height="90" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="38" cy="50" r="3" fill="#4e342e"/><rect x="45" y="5" width="40" height="90" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="52" cy="50" r="3" fill="#4e342e"/></svg>',
+    c9: '<svg viewBox="0 0 90 120" class="card-icon"><rect x="5" y="5" width="80" height="20" fill="none" stroke="#4e342e" stroke-width="2"/><rect x="5" y="30" width="40" height="85" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="38" cy="75" r="3" fill="#4e342e"/><rect x="45" y="30" width="40" height="85" fill="none" stroke="#4e342e" stroke-width="2"/><circle cx="52" cy="75" r="3" fill="#4e342e"/></svg>'
 };
 
 const DB = {
     configs: [
-        {id:1, name:"Single Door", d:1, sl:0, t:false, icon:svgs.c1},
-        {id:2, name:"Single + 1 SL", d:1, sl:1, t:false, icon:svgs.c2},
-        {id:3, name:"Single + 2 SL", d:1, sl:2, t:false, icon:svgs.c3},
-        {id:4, name:"S + Rect Transom", d:1, sl:2, t:true, icon:svgs.c4},
-        {id:5, name:"S + Seg Transom", d:1, sl:2, t:true, icon:svgs.c5},
-        {id:6, name:"S + Ellip Transom", d:1, sl:2, t:true, icon:svgs.c6},
-        {id:7, name:"S + 1/2 Rd Transom", d:1, sl:2, t:true, icon:svgs.c7},
-        {id:8, name:"Double Door", d:2, sl:0, t:false, icon:svgs.c8},
-        {id:9, name:"Dbl + Rect Transom", d:2, sl:0, t:true, icon:svgs.c9},
-        {id:10, name:"Dbl + Seg Transom", d:2, sl:0, t:true, icon:svgs.c10},
-        {id:11, name:"Dbl + Ellip Transom", d:2, sl:0, t:true, icon:svgs.c11},
-        {id:12, name:"Dbl + 1/2 Rd Transom", d:2, sl:0, t:true, icon:svgs.c12}
+        {id:1, name:"Single Door", d:1, sl:0, icon:svgs.c1, img:"https://via.placeholder.com/300x400?text=Single+Door"},
+        {id:2, name:"Single + 1 Sidelight", d:1, sl:1, icon:svgs.c2, img:"https://via.placeholder.com/400x400?text=Single+1SL"},
+        {id:3, name:"Single + 2 Sidelights", d:1, sl:2, icon:svgs.c3, img:"https://via.placeholder.com/500x400?text=Single+2SL"},
+        {id:4, name:"Sgl+2SL+Transom", d:1, sl:2, t:true, icon:svgs.c4, img:"https://via.placeholder.com/500x500?text=Sgl+2SL+Transom"},
+        {id:8, name:"Double Door", d:2, sl:0, icon:svgs.c8, img:"https://via.placeholder.com/500x400?text=Double+Door"},
+        {id:9, name:"Double + Transom", d:2, sl:0, t:true, icon:svgs.c9, img:"https://via.placeholder.com/500x500?text=Double+Transom"}
     ],
-    stains: ["Jacobean", "Special Walnut", "English Chestnut", "Red Oak", "Velvet Smoke", "Ebony"],
+    hardware: {
+        threshold: [
+            {name: "Bronze", color: "#8b5a2b"}, {name: "Mill Finish", color: "#c0c0c0"}
+        ],
+        hinge: [
+            {name: "Black", color: "#222222"}, {name: "Oil Rubbed Bronze", color: "#6f4e37"}, {name: "Satin Nickel", color: "#a8a9ad"}
+        ]
+    },
+    collections: [
+        {name:"6 PANEL", pages:[9,31], img:"https://via.placeholder.com/300x400?text=6+Panel"},
+        {name:"FULL LITE", pages:[10,11], img:"https://via.placeholder.com/300x400?text=Full+Lite"},
+        {name:"3/4 LITE", pages:[12,13,14,15,33,34,45], img:"https://via.placeholder.com/300x400?text=3/4+Lite"},
+        {name:"2/3 LITE", pages:[16,17,35,36,37,38], img:"https://via.placeholder.com/300x400?text=2/3+Lite"},
+        {name:"2/3 ARCH", pages:[18,19,53], img:"https://via.placeholder.com/300x400?text=2/3+Arch"},
+        {name:"1/2 LITE", pages:[20,39], img:"https://via.placeholder.com/300x400?text=1/2+Lite"},
+        {name:"TWIN LITE", pages:[21,22,23,43], img:"https://via.placeholder.com/300x400?text=Twin+Lite"},
+        {name:"OVAL", pages:[24,25,26,40,41], img:"https://via.placeholder.com/300x400?text=Oval"},
+        {name:"DELUXE OVAL", pages:[40], img:"https://via.placeholder.com/300x400?text=Deluxe+Oval"},
+        {name:"FAN LITE", pages:[27], img:"https://via.placeholder.com/300x400?text=Fan+Lite"},
+        {name:"SPECIALTY", pages:[28,29,30,42,43,44], img:"https://via.placeholder.com/300x400?text=Specialty"},
+        {name:"SOLID 2-PANEL", pages:[31], img:"https://via.placeholder.com/300x400?text=Solid+2-Panel"},
+        {name:"IRON GRILLE", pages:[47,48,49,50,51,52,53,54,55,56,57,58,59,60], img:"https://via.placeholder.com/300x400?text=Iron+Grille"}
+    ],
     textures: [
-        {name: "Clear Bevel", code:"CBL", priv: 1}, {name: "Baroque", code:"BRQ", priv: 2}, 
-        {name: "Gluechip Bevel", code:"GCB", priv: 3}, {name: "Gluechip", code:"GLC", priv: 4}, 
-        {name: "Water", code:"WAT", priv: 5}, {name: "Hammered", code:"HAM", priv: 6},
-        {name: "Reeded", code:"RED", priv: 7}, {name: "Granite", code:"GRN", priv: 8}, 
-        {name: "Flemish", code:"FLM", priv: 3}, {name: "Rain", code:"RN", priv: 6}, 
-        {name: "Stippolyte", code:"STP", priv: 5}
+        {name:"Clear Bevel", p:1, desc:"Transparent with beveled edges.", img:"https://via.placeholder.com/150?text=Clear+Bevel"},
+        {name:"Gluechip Bevel", p:3, desc:"Frosted texture with beveled edges.", img:"https://via.placeholder.com/150?text=Gluechip+Bevel"},
+        {name:"Gluechip", p:4, desc:"Frosted, fern-like pattern.", img:"https://via.placeholder.com/150?text=Gluechip"},
+        {name:"Rain", p:6, desc:"Vertical pattern resembling rain streaks.", img:"https://via.placeholder.com/150?text=Rain"},
+        {name:"Flemish", p:3, desc:"Classic, rippled glass.", img:"https://via.placeholder.com/150?text=Flemish"},
+        {name:"Reeded", p:7, desc:"Thin, vertical lines.", img:"https://via.placeholder.com/150?text=Reeded"},
+        {name:"Granite", p:8, desc:"Pebbled texture.", img:"https://via.placeholder.com/150?text=Granite"},
+        {name:"Water", p:5, desc:"Soft, flowing texture.", img:"https://via.placeholder.com/150?text=Water"},
+        {name:"Baroque", p:2, desc:"Gentle, wavy texture.", img:"https://via.placeholder.com/150?text=Baroque"},
+        {name:"Hammered", p:6, desc:"Beaten metal look.", img:"https://via.placeholder.com/150?text=Hammered"}
     ],
-    categories: [
-        { name: "6 PANEL", pages: [9,31], active: true },
-        { name: "FULL LITE", pages: [10], active: true },
-        { name: "3/4 LITE", pages: [12,13,14,15,33], active: true },
-        { name: "2/3 LITE", pages: [16,17,35], active: true },
-        { name: "2/3 ARCH", pages: [18,19], active: true },
-        { name: "1/2 LITE", pages: [20,39], active: true },
-        { name: "TWIN LITE", pages: [21,22,23], active: true },
-        { name: "OVAL", pages: [24,25,26,40], active: true },
-        { name: "FAN LITE", pages: [27], active: true }
+    ironTextures: [
+        {name:"Clear", p:1, desc:"Transparent glass.", img:"https://via.placeholder.com/150?text=Clear"},
+        {name:"Flemish", p:3, desc:"Rippled glass.", img:"https://via.placeholder.com/150?text=Flemish"},
+        {name:"Rain", p:6, desc:"Rain pattern.", img:"https://via.placeholder.com/150?text=Rain"},
+        {name:"Reeded", p:7, desc:"Vertical line glass.", img:"https://via.placeholder.com/150?text=Reeded"},
+        {name:"Stippolyte", p:5, desc:"Fine, stippled texture.", img:"https://via.placeholder.com/150?text=Stippolyte"}
     ],
     doors: [
-        {id:"M6P", name:"Plain 6 Panel", baseId:"M6P", page:9, mat:"Mahogany", variants:[{w:32,h:68},{w:36,h:68}], configs:[1,8], price:{us:621, ug:0, ps:1052, pg:0}},
-        {id:"M6PRM", name:"6 Panel Raised Moulding", baseId:"M6PRM", page:9, mat:"Mahogany", variants:[{w:36,h:68}], configs:[1,8], price:{us:759, ug:0, ps:1190, pg:0}},
-        {id:"M6PRM6L", name:"6 Panel RM (6 Lite)", baseId:"M6PRM6L", page:9, mat:"Mahogany", variants:[{w:36,h:68}], configs:[1,8], price:{us:915, ug:1518, ps:1346, pg:1949}},
-        {id:"MFULLCOR", name:"Cornell Full Lite", baseId:"MFULLCOR", page:10, mat:"Mahogany", suffix:"COR", hasCaming:true, variants:[{w:36,h:68}], configs:"all", price:{us:449, ug:1308, ps:880, pg:1739}},
-        {id:"MFULLDAR", name:"Dartmouth Full Lite", baseId:"MFULLDAR", page:10, mat:"Mahogany", suffix:"DAR", hasCaming:true, variants:[{w:36,h:68}], configs:"all", price:{us:449, ug:1308, ps:880, pg:1739}},
-        {id:"MFULLPRI", name:"Princeton Full Lite", baseId:"MFULLPRI", page:10, mat:"Mahogany", suffix:"PRI", hasCaming:true, variants:[{w:36,h:68}], configs:"all", price:{us:449, ug:1308, ps:880, pg:1739}},
-        {id:"MFULLHAR", name:"Harvard Full Lite", baseId:"MFULLHAR", page:10, mat:"Mahogany", suffix:"HAR", hasCaming:true, variants:[{w:36,h:68}], configs:"all", price:{us:449, ug:1308, ps:880, pg:1739}},
-        {id:"M30806P", name:"3'0\" 6 Panel (8'0\")", baseId:"M30806P", page:31, mat:"Mahogany", variants:[{w:36,h:80}], configs:[1,8], price:{us:897, ug:0, ps:1414, pg:0}},
+        // 6 Panel
+        {id:"M6P", name:"Plain 6 Panel", page:9, slType:"full", mat:"Mahogany", variants:[{w:32,h:80},{w:36,h:80},{w:42,h:96}], configs:[1,8], price:{80:{us:621,ug:0,ps:1052,pg:0}, 96:{us:897,ug:0,ps:1414,pg:0}}, img:"https://via.placeholder.com/300x500?text=6-Panel"},
+        
+        // Full Lite
+        {id:"MFULLCOR", name:"Cornell Full Lite", page:10, slType:"full", mat:"Mahogany", hasCaming:true, variants:[{w:36,h:80},{w:36,h:96}], configs:"all", price:{80:{us:449,ug:1308,ps:880,pg:1739}, 96:{us:600,ug:1500,ps:1000,pg:2000}}, fixedGlass:"Gluechip & Clear Bevel", img:"https://via.placeholder.com/300x500?text=Cornell"},
+        {id:"MFULLPRI", name:"Princeton Full Lite", page:10, slType:"full", mat:"Mahogany", hasCaming:true, variants:[{w:36,h:80},{w:36,h:96}], configs:"all", price:{80:{us:449,ug:1308,ps:880,pg:1739}, 96:{us:600,ug:1500,ps:1000,pg:2000}}, fixedGlass:"All Clear Bevels", img:"https://via.placeholder.com/300x500?text=Princeton"},
+
+        // 3/4 Lite
+        {id:"M34ASH", name:"Ashton 3/4 Lite", page:13, slType:"3/4", mat:"Mahogany", hasCaming:true, variants:[{w:32,h:80},{w:36,h:80},{w:36,h:96}], configs:"all", price:{80:{us:580,ug:1353,ps:1011,pg:1784}, 96:{us:700,ug:1600,ps:1200,pg:2100}}, fixedGlass:"Gluechip & Clear Bevel", img:"https://via.placeholder.com/300x500?text=Ashton"},
+        {id:"M34PEC", name:"Pecos 3/4 Lite", page:15, slType:"3/4", mat:"Mahogany", hasCaming:true, variants:[{w:32,h:80},{w:36,h:80},{w:42,h:96}], configs:"all", price:{80:{us:580,ug:1353,ps:1011,pg:1784}, 96:{us:700,ug:1600,ps:1200,pg:2100}}, fixedGlass:"Reeded, Gluechip, Bevels", img:"https://via.placeholder.com/300x500?text=Pecos"},
+        {id:"M34DAR", name:"Dartmouth 3/4 Lite", page:14, slType:"3/4", mat:"Mahogany", hasCaming:true, variants:[{w:32,h:80},{w:36,h:80},{w:42,h:96}], configs:"all", price:{80:{us:580,ug:1353,ps:1011,pg:1784}, 96:{us:700,ug:1600,ps:1200,pg:2100}}, fixedGlass:"Gluechip & Clear Bevel", img:"https://via.placeholder.com/300x500?text=Dartmouth"},
+        {id:"M34PIN", name:"Pinehurst 3/4 Lite", page:12, slType:"3/4", mat:"Mahogany", hasCaming:true, variants:[{w:32,h:80},{w:36,h:80},{w:42,h:96}], configs:"all", price:{80:{us:580,ug:1353,ps:1011,pg:1784}, 96:{us:700,ug:1600,ps:1200,pg:2100}}, fixedGlass:"Clear Bevel", img:"https://via.placeholder.com/300x500?text=Pinehurst"},
+        
+        // Oval (NO 42")
+        {id:"MFOVTRI", name:"Trinity Full Oval", page:24, slType:"full", mat:"Mahogany", hasCaming:true, variants:[{w:36,h:80},{w:36,h:96}], configs:"all", price:{80:{us:815,ug:1432,ps:1246,pg:1863}, 96:{us:950,ug:1700,ps:1400,pg:2200}}, fixedGlass:"Water, Gluechip & Clear Bevels", img:"https://via.placeholder.com/300x500?text=Trinity+Oval"},
+
+        // Deluxe Oval (New Collection)
+        {id:"MOVXPAY", name:"Payton Deluxe Oval", page:40, slType:"3/4", mat:"Mahogany", hasCaming:true, variants:[{w:36,h:96}], configs:"all", price:{96:{us:1200,ug:2200,ps:1600,pg:2800}}, fixedGlass:"Gluechip, Baroque & Clear Bevels", img:"https://via.placeholder.com/300x500?text=Payton+Deluxe"},
+        {id:"MOVXMED", name:"Medina Deluxe Oval", page:40, slType:"3/4", mat:"Mahogany", hasCaming:true, variants:[{w:36,h:96}], configs:"all", price:{96:{us:1200,ug:2200,ps:1600,pg:2800}}, fixedGlass:"Water, Gluechip & Clear Bevels", img:"https://via.placeholder.com/300x500?text=Medina+Deluxe"},
+
+        // Solid 2-Panel (New Collection)
+        {id:"M2PSQ", name:"2 Panel Square", page:31, slType:"full", mat:"Mahogany", variants:[{w:36,h:96},{w:42,h:96}], configs:[1,8], price:{96:{us:950,ug:0,ps:1400,pg:0}}, img:"https://via.placeholder.com/300x500?text=2+Panel+Square"},
+        {id:"M2PA", name:"2 Panel Arch", page:31, slType:"full", mat:"Mahogany", variants:[{w:36,h:96},{w:42,h:96}], configs:[1,8], price:{96:{us:950,ug:0,ps:1400,pg:0}}, img:"https://via.placeholder.com/300x500?text=2+Panel+Arch"},
+
+        // Specialty - 42" Options
+        {id:"M9LM", name:"Marginal 9-Lite", page:42, slType:"full", mat:"Mahogany", variants:[{w:36,h:96},{w:42,h:96}], configs:"all", price:{96:{us:1325,ug:0,ps:1800,pg:0}}, fixedGlass:"Clear Low-E Bevel", img:"https://via.placeholder.com/300x500?text=9-Lite"},
+        {id:"MCMC", name:"Craftsman 6-Lite", page:42, slType:"full", mat:"Mahogany", variants:[{w:36,h:96},{w:42,h:96}], configs:"all", price:{96:{us:1325,ug:0,ps:1800,pg:0}}, fixedGlass:"Clear Low-E Bevel", img:"https://via.placeholder.com/300x500?text=Craftsman"},
+
+        // Iron Grille (Extended)
+        {id:"MFULLBARC", name:"Barcelona Iron", page:47, slType:"full", mat:"Mahogany", hasCaming:false, iron:true, variants:[{w:32,h:80},{w:36,h:80},{w:36,h:96}], configs:"all", price:{80:{us:449,ug:1677,ps:880,pg:2108}, 96:{us:666,ug:1894,ps:1183,pg:2411}}, img:"https://via.placeholder.com/300x500?text=Barcelona"},
+        {id:"MFULLBAL", name:"Balfour Iron", page:47, slType:"full", mat:"Mahogany", hasCaming:false, iron:true, variants:[{w:32,h:80},{w:36,h:80},{w:36,h:96}], configs:"all", price:{80:{us:449,ug:1677,ps:880,pg:2108}, 96:{us:666,ug:1894,ps:1183,pg:2411}}, img:"https://via.placeholder.com/300x500?text=Balfour"}
     ],
     sidelights: [
-        {page:9, name:"Full Lite SL", base:"MFULLSLCBLE", price:{us:314, ug:682, ps:616, pg:984}},
-        {page:10, name:"Full Lite SL", base:"MFULLSL", price:{us:314, ug:915, ps:616, pg:1217}}
-    ]
+        {type:"full", h:80, price:{us:314, ug:682, ps:616, pg:984}},
+        {type:"3/4", h:80, price:{us:406, ug:946, ps:708, pg:1248}},
+        {type:"full", h:96, price:{us:466, ug:0, ps:768, pg:0}},
+        {type:"3/4", h:96, price:{us:466, ug:1084, ps:768, pg:1386}}
+    ],
+    prehang: { s80:179, s96:215, d80:459, d96:487, jamb6:14 }
 };
 
+/* --- LOGIC ENGINE --- */
 const app = {
-    state: { history:[], mat:null, h:null, w:null, config:null, swing:null, catPage:null, door:null, opt:{finish:'unf', stain:null, glass:'open', texture:'Clear Bevel', caming:'Patina', slSize:12} },
-    
+    state: {
+        history: [], mat: 'Mahogany', h: null, w: null, config: null,
+        handing: null, jamb: '4', threshold: 'Bronze', hinge: 'Black',
+        collection: null, door: null, glass: null, caming: 'Patina'
+    },
+    cart: [],
+
     init: () => {
-        const sl = document.getElementById('stain-list');
-        DB.stains.forEach(s => sl.innerHTML+=`<div class="chip" onclick="app.setOpt('stain','${s}', this)">${s}</div>`);
-        const gt = document.getElementById('glass-texture');
-        DB.textures.forEach(t => gt.innerHTML+=`<option value="${t.name}">${t.name} (Privacy: ${t.priv})</option>`);
-        const now = new Date();
-        document.getElementById('print-date').innerText = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+        document.getElementById('print-date').innerText = new Date().toLocaleDateString();
+        app.renderHardware();
     },
 
+    // --- NAVIGATION ---
     nav: (id) => {
-        if(document.querySelector('.view.active')) app.state.history.push(document.querySelector('.view.active').id);
-        document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+        const current = document.querySelector('.view.active');
+        if(current && current.id !== id) app.state.history.push(current.id);
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        document.getElementById('live-price-bar').style.display = (id === 'v-options') ? 'flex' : 'none';
+        window.scrollTo(0,0);
     },
     back: () => {
-        if(app.state.history.length) {
+        if(app.state.history.length > 0) {
             const prev = app.state.history.pop();
-            document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(prev).classList.add('active');
-            document.getElementById('live-price-bar').style.display = (prev === 'v-options') ? 'flex' : 'none';
+            window.scrollTo(0,0);
         }
     },
-    goHome: () => location.reload(),
 
-    setMaterial: (m) => { app.state.mat = m; app.nav('v-height'); },
-    setHeight: (h) => { app.state.h = h; app.renderWidths(); app.nav('v-width'); },
+    // --- STEP 1: SIZE & CONFIG ---
+    setHeight: (h) => {
+        app.state.h = h;
+        document.getElementById('h-80').classList.toggle('selected', h===80);
+        document.getElementById('h-96').classList.toggle('selected', h===96);
+        app.renderWidths();
+        document.getElementById('width-section').style.display = 'block';
+        document.getElementById('config-section').style.display = 'none';
+    },
     renderWidths: () => {
         const wg = document.getElementById('width-grid'); wg.innerHTML = '';
-        const widths = [...new Set(DB.doors.filter(d=>d.mat===app.state.mat && d.variants.some(v=>v.h===app.state.h)).flatMap(d=>d.variants.map(v=>v.w)))].sort();
-        widths.forEach(w => wg.innerHTML += `<div class="card" onclick="app.setWidth(${w})"><span class="card-title">${w===36?"3'0\"":(w===32?"2'8\"":w)}</span></div>`);
+        
+        // --- STRICT FIX: Filter widths ONLY available at selected Height ---
+        const widths = [...new Set(
+            DB.doors
+            .filter(d => d.mat === app.state.mat)
+            .flatMap(d => d.variants.filter(v => v.h === app.state.h).map(v => v.w))
+        )].sort();
+
+        widths.forEach(w => {
+            wg.innerHTML += `<div class="card" onclick="app.setWidth(${w}, this)"><span class="card-title">${w===42?"3'6\" (42\")":w+"\""}</span></div>`;
+        });
     },
-    setWidth: (w) => { app.state.w = w; app.renderConfigs(); app.nav('v-config'); },
+    setWidth: (w, el) => {
+        app.state.w = w;
+        document.querySelectorAll('#width-grid .card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        app.renderConfigs();
+        document.getElementById('config-section').style.display = 'block';
+    },
     renderConfigs: () => {
         const cg = document.getElementById('config-grid'); cg.innerHTML = '';
         DB.configs.forEach(c => {
-            cg.innerHTML += `<div class="card" style="padding:10px;" onclick="app.setConfig(${c.id})">${c.icon}<span style="font-size:0.75rem; font-weight:700; display:block; margin-top:5px;">#${c.id}<br>${c.name}</span></div>`;
+            cg.innerHTML += `
+                <div class="card" onclick="app.setConfig(${c.id})">
+                    <img src="${c.img}" class="card-img" alt="${c.name}">
+                    ${c.icon}
+                    <span class="card-title">${c.name}</span>
+                </div>`;
         });
     },
-    setConfig: (id) => { app.state.config = DB.configs.find(c=>c.id===id); app.nav('v-swing'); },
-    setSwing: (s) => { app.state.swing = s; app.renderCats(); app.nav('v-category'); },
-    renderCats: () => {
-        const cg = document.getElementById('cat-grid'); cg.innerHTML = '';
-        DB.categories.forEach(c => {
-            if(c.active) cg.innerHTML += `<div class="card" onclick="app.setCat([${c.pages}])"><span class="card-title">${c.name}</span></div>`;
-            else cg.innerHTML += `<div class="card" style="opacity:0.5; cursor:default;"><span class="card-title">${c.name}</span><small>Data Needed</small></div>`;
-        });
+    setConfig: (id) => {
+        app.state.config = DB.configs.find(c => c.id === id);
+        app.nav('v-hardware');
     },
-    setCat: (pages) => {
-        app.state.catPage = pages;
-        const dl = document.getElementById('door-list'); dl.innerHTML = '';
-        const valid = DB.doors.filter(d => d.mat === app.state.mat && pages.includes(d.page) && d.variants.some(v => v.h === app.state.h && v.w === app.state.w) && (d.configs==="all" || d.configs.includes(app.state.config.id)));
-        if(valid.length === 0) dl.innerHTML = '<div style="text-align:center; padding:20px; color:#666">No doors match selection.</div>';
-        valid.forEach(d => {
-            let p = d.price.us > 0 ? d.price.us : d.price.ug;
-            dl.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; text-align:left" onclick='app.setDoor(${JSON.stringify(d)})'><div><span class="card-title" style="margin-top:0">${d.name}</span></div><div style="font-weight:800; font-size:1.2rem;">From $${p}</div></div>`;
-        });
-        app.nav('v-doors');
-    },
-    setDoor: (d) => { app.state.door = d; app.initOptions(); app.nav('v-options'); },
 
-    initOptions: () => {
-        const d = app.state.door;
-        document.getElementById('opt-door-name').innerText = d.name;
-        document.getElementById('opt-config-name').innerText = `Config #${app.state.config.id} • ${app.state.swing}`;
-        document.getElementById('glass-group').style.display = (d.price.ug > 0) ? 'block' : 'none';
-        document.getElementById('caming-group').style.display = (d.hasCaming && d.price.ug > 0) ? 'block' : 'none';
-        if(d.price.ug > 0) app.setOpt('glass', 'install');
-        app.updatePrice();
+    // --- STEP 2: HARDWARE ---
+    setHanding: (h) => {
+        app.state.handing = h;
+        document.querySelectorAll('#v-hardware .grid-4 .card').forEach(c => c.classList.remove('selected'));
+        document.getElementById(h === 'LH Inswing' ? 'hand-lhi' : h === 'RH Inswing' ? 'hand-rhi' : h === 'LH Outswing' ? 'hand-lho' : 'hand-rho').classList.add('selected');
     },
-    setOpt: (key, val, el) => {
-        app.state.opt[key] = val;
-        if(key==='finish') {
-            document.getElementById('fin-unf').classList.toggle('selected', val==='unf');
-            document.getElementById('fin-pre').classList.toggle('selected', val==='pre');
-            document.getElementById('stain-group').style.display = val==='pre' ? 'block' : 'none';
-        }
-        if(key==='glass') {
-            document.getElementById('gl-open').classList.toggle('selected', val==='open');
-            document.getElementById('gl-install').classList.toggle('selected', val==='install');
-            document.getElementById('glass-texture').style.display = val==='install' ? 'block' : 'none';
-        }
-        if(key==='stain' && el) {
-            document.querySelectorAll('#stain-list .chip').forEach(c=>c.classList.remove('selected'));
+    setOption: (key, val, el) => {
+        app.state[key] = val;
+        if(key === 'jamb') {
+            document.getElementById('jamb-4').classList.toggle('selected', val==='4');
+            document.getElementById('jamb-6').classList.toggle('selected', val==='6');
+        } else {
+            el.parentElement.querySelectorAll('.swatch-opt').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
         }
-        if(key==='caming') {
-            document.getElementById('cam-patina').classList.toggle('selected', val==='Patina');
-            document.getElementById('cam-zinc').classList.toggle('selected', val==='Zinc');
-        }
-        app.updatePrice();
+    },
+    renderHardware: () => {
+        const tl = document.getElementById('threshold-list'); tl.innerHTML = '';
+        DB.hardware.threshold.forEach(t => {
+            tl.innerHTML += `<div class="swatch-opt ${t.name==='Bronze'?'selected':''}" onclick="app.setOption('threshold','${t.name}',this)"><div class="swatch-color" style="background:${t.color}"></div><span class="swatch-name">${t.name}</span></div>`;
+        });
+        const hl = document.getElementById('hinge-list'); hl.innerHTML = '';
+        DB.hardware.hinge.forEach(h => {
+            hl.innerHTML += `<div class="swatch-opt ${h.name==='Black'?'selected':''}" onclick="app.setOption('hinge','${h.name}',this)"><div class="swatch-color" style="background:${h.color}"></div><span class="swatch-name">${h.name}</span></div>`;
+        });
     },
 
-    calculatePrice: () => {
-        const s = app.state; const d = s.door; const c = s.config; const o = s.opt;
-        const slData = DB.sidelights.find(x => x.page === (d.page === 9 || d.page === 10 ? d.page : 9)) || DB.sidelights[0];
-        
-        let dPrice = 0;
-        if(o.finish === 'unf') {
-            dPrice = (o.glass==='install' && d.price.ug > 0) ? d.price.ug : d.price.us;
-        } else {
-            dPrice = (o.glass==='install' && d.price.pg > 0) ? d.price.pg : d.price.ps;
+    // --- STEP 3: COLLECTION ---
+    renderCollections: () => {
+        const cg = document.getElementById('collection-grid'); cg.innerHTML = '';
+        // Only show collections that have models matching the selected Size
+        const activeCollections = DB.collections.filter(col => {
+            return DB.doors.some(d => d.mat === app.state.mat 
+                && col.pages.includes(d.page) 
+                && d.variants.some(v => v.h === app.state.h && v.w === app.state.w));
+        });
+
+        if(activeCollections.length === 0) {
+            cg.innerHTML = '<p>No collections available for this size.</p>';
+            return;
         }
 
-        let slPrice = 0;
-        if(c.sl > 0) {
-            if(o.finish === 'unf') {
-                slPrice = (o.glass==='install' && slData.price.ug > 0) ? slData.price.ug : slData.price.us;
-            } else {
-                slPrice = (o.glass==='install' && slData.price.pg > 0) ? slData.price.pg : slData.price.ps;
-            }
-        }
-
-        return (dPrice * c.d) + (slPrice * c.sl);
+        activeCollections.forEach(c => {
+            cg.innerHTML += `
+                <div class="card" onclick="app.setCollection([${c.pages}], '${c.name}')">
+                    <img src="${c.img}" class="card-img" alt="${c.name}">
+                    <span class="card-title">${c.name}</span>
+                </div>`;
+        });
+    },
+    setCollection: (pages, name) => {
+        app.state.collection = {pages, name};
+        app.renderModels();
+        app.nav('v-model-glass');
     },
 
-    updatePrice: () => {
-        const total = app.calculatePrice();
-        document.getElementById('opt-live-price').innerText = "$" + total.toLocaleString();
+    // --- STEP 4: MODEL & GLASS ---
+    renderModels: () => {
+        const mg = document.getElementById('model-grid'); mg.innerHTML = '';
+        document.getElementById('model-glass-title').innerText = `Step 4: Select ${app.state.collection.name} Model`;
+        document.getElementById('glass-section').style.display = 'none';
+        
+        // Strict Filter: Match Height AND Width
+        const valid = DB.doors.filter(d => d.mat===app.state.mat 
+            && app.state.collection.pages.includes(d.page) 
+            && d.variants.some(v=>v.h===app.state.h && v.w===app.state.w) 
+            && (d.configs==="all" || d.configs.includes(app.state.config.id)));
+        
+        if(valid.length === 0) mg.innerHTML = '<p>No doors found in this configuration.</p>';
+        valid.forEach(d => {
+            // Get price based on Height
+            let pObj = d.price[app.state.h] || d.price[80]; 
+            let p = (pObj.ug > 0) ? pObj.pg : pObj.ps;
+            
+            mg.innerHTML += `
+                <div class="card" onclick='app.setModel(${JSON.stringify(d)}, this)'>
+                    <img src="${d.img}" class="card-img" alt="${d.name}">
+                    <span class="card-title">${d.name}</span>
+                    <span class="card-price">From $${p}</span>
+                </div>`;
+        });
+    },
+    setModel: (d, el) => {
+        app.state.door = d;
+        document.querySelectorAll('#model-grid .card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        app.renderGlassOptions(d);
+    },
+    renderGlassOptions: (d) => {
+        const gc = document.getElementById('glass-options-container'); gc.innerHTML = '';
+        const gs = document.getElementById('glass-section');
+        
+        // Check price for current height
+        let pObj = d.price[app.state.h] || d.price[80];
+
+        if(pObj.ug === 0) { // Solid Door
+            gs.style.display = 'none';
+            app.state.glass = null;
+            app.renderSummary();
+            app.nav('v-summary');
+            return;
+        }
+        gs.style.display = 'block';
+
+        if(d.fixedGlass) { // Decorative (Fixed)
+            app.state.glass = d.fixedGlass;
+            gc.innerHTML = `
+                <div class="card selected" style="max-width:400px; margin:0 auto; cursor:default;">
+                    <span class="card-title">Features ${d.fixedGlass}</span>
+                    <span class="card-desc">This door comes with a pre-determined decorative glass panel.</span>
+                </div>`;
+        } else { // Iron/Clear (Selectable)
+            const textures = d.iron ? DB.ironTextures : DB.textures;
+            app.state.glass = textures[0].name;
+            gc.innerHTML = '<div class="grid-3">';
+            textures.forEach(t => {
+                gc.querySelector('.grid-3').innerHTML += `
+                    <div class="card ${t.name===app.state.glass?'selected':''}" onclick="app.setGlass('${t.name}', this)">
+                        <img src="${t.img}" class="card-img" style="height:120px;" alt="${t.name}">
+                        <span class="card-title">${t.name}</span>
+                        <span class="card-desc" style="font-size:0.8rem;">Privacy: ${t.p}/10</span>
+                    </div>`;
+            });
+            gc.innerHTML += '</div>';
+        }
+
+        if(d.hasCaming) {
+            gc.innerHTML += `
+                <div style="margin-top: 30px; text-align:center;">
+                    <span class="opt-label">Caming Color</span>
+                    <div class="swatch-container" style="justify-content:center;">
+                        <div class="swatch-opt selected" onclick="app.setCaming('Patina', this)"><div class="swatch-color" style="background:#333;"></div><span class="swatch-name">Patina</span></div>
+                        <div class="swatch-opt" onclick="app.setCaming('Zinc', this)"><div class="swatch-color" style="background:#c0c0c0;"></div><span class="swatch-name">Zinc</span></div>
+                    </div>
+                </div>`;
+        }
+        gc.innerHTML += '<button class="btn" onclick="app.renderSummary(); app.nav(\'v-summary\')">Review Order</button>';
+    },
+    setGlass: (g, el) => {
+        app.state.glass = g;
+        el.parentElement.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+    },
+    setCaming: (c, el) => {
+        app.state.caming = c;
+        el.parentElement.querySelectorAll('.swatch-opt').forEach(s => s.classList.remove('selected'));
+        el.classList.add('selected');
     },
 
-    generateFullText: () => {
-        const s = app.state; const d = s.door; const o = s.opt;
-        let sku = d.baseId;
+    // --- STEP 5: SUMMARY ---
+    calculateTotal: () => {
+        const s = app.state; const d = s.door; const c = s.config;
+        const slData = DB.sidelights.find(sl => sl.type === d.slType && sl.h === s.h) || DB.sidelights[0];
         
-        if(d.hasCaming && o.caming === 'Zinc') {
-            sku = sku.replace(/P(?=\d)/, 'Z').replace('CORP','CORZ').replace('DARP','DARZ').replace('PRIP','PRIZ').replace('HARP','HARZ');
-        }
-        if(!sku.includes('3068') && !sku.includes('3080')) sku += (s.h===68?"3068":"3080");
+        let pObj = d.price[s.h] || d.price[80]; // Get Height specific price
+        let dP = (pObj.ug > 0) ? pObj.pg : pObj.ps; 
         
-        let desc = sku;
-        if(o.glass === 'install') desc += " - " + o.texture;
-        else desc += " - No Glass";
-
-        if(o.finish==='pre') {
-            desc += " - Prefinished";
-            if(o.stain) desc += " - " + o.stain;
-        } else {
-            desc += " - Unfinished";
-        }
-
-        if(s.swing) desc += " - " + s.swing;
-        return desc;
+        let sP = (pObj.ug > 0) ? slData.price.pg : slData.price.ps;
+        let phP = (s.h === 80 ? (c.d === 1 ? DB.prehang.s80 : DB.prehang.d80) : (c.d === 1 ? DB.prehang.s96 : DB.prehang.d96));
+        if(s.jamb === '6') phP += DB.prehang.jamb6;
+        
+        return (dP * c.d) + (sP * c.sl) + phP;
     },
-
-    renderReview: () => {
-        const total = app.calculatePrice();
-        const s = app.state; const d = s.door; const c = s.config; const o = s.opt;
-        const slData = DB.sidelights.find(x => x.page === (d.page === 9 || d.page === 10 ? d.page : 9)) || DB.sidelights[0];
-        
-        let dPrice = o.finish === 'unf' ? ((o.glass==='install' && d.price.ug > 0) ? d.price.ug : d.price.us) : ((o.glass==='install' && d.price.pg > 0) ? d.price.pg : d.price.ps);
-        let slPrice = 0;
-        if(c.sl > 0) {
-            slPrice = o.finish === 'unf' ? ((o.glass==='install' && slData.price.ug > 0) ? slData.price.ug : slData.price.us) : ((o.glass==='install' && slData.price.pg > 0) ? slData.price.pg : slData.price.ps);
-        }
-
-        const fullDesc = app.generateFullText();
-
+    renderSummary: () => {
+        const s = app.state; const d = s.door;
         let html = `
             <table class="review-table">
-                <tr><td colspan="2"><div class="sku-box">${fullDesc}</div></td></tr>
-                <tr><td class="r-label">Door</td><td class="r-val"><b>${d.name}</b></td></tr>
-                
-                <tr>
-                    <td colspan="2" class="line-item">
-                        <span>${c.d}x Door Unit</span>
-                        <span>$${dPrice.toLocaleString()}/ea</span>
-                    </td>
-                </tr>
-        `;
-        
-        if(c.sl > 0) {
-            html += `<tr>
-                    <td colspan="2" class="line-item">
-                        <span>${c.sl}x Sidelight (${o.slSize}")</span>
-                        <span>$${slPrice.toLocaleString()}/ea</span>
-                    </td>
-                </tr>`;
+                <tr><td class="r-label">Door Model</td><td class="r-val">${d.name}</td></tr>
+                <tr><td class="r-label">Size & Config</td><td class="r-val">${s.w}" x ${s.h}" • ${s.config.name}</td></tr>
+                <tr><td class="r-label">Handing</td><td class="r-val">${s.handing}</td></tr>
+                <tr><td class="r-label">Jamb Depth</td><td class="r-val">${s.jamb === '6' ? '6 9/16"' : '4 9/16"'}</td></tr>
+                <tr><td class="r-label">Hardware</td><td class="r-val">${s.threshold} Threshold<br>${s.hinge} Hinges</td></tr>`;
+        if(s.glass) {
+            html += `<tr><td class="r-label">Glass</td><td class="r-val">${d.fixedGlass ? 'Features ' : ''}${s.glass}</td></tr>`;
+            if(d.hasCaming) html += `<tr><td class="r-label">Caming</td><td class="r-val">${s.caming}</td></tr>`;
         }
-
-        if(c.t) html += `<tr><td class="r-label">Transom</td><td class="r-val" style="color:red">Included in SKU, Not Priced</td></tr>`;
-
+        if(s.config.sl > 0) html += `<tr><td class="r-label">Sidelights</td><td class="r-val">${s.config.sl}x (${d.slType})</td></tr>`;
         html += `</table>`;
-        document.getElementById('review-content').innerHTML = html;
-        document.getElementById('total-price').innerText = "$" + total.toLocaleString();
-        app.nav('v-review');
+        document.getElementById('summary-content').innerHTML = html;
+        document.getElementById('total-price').innerText = "$" + app.calculateTotal().toLocaleString();
+    },
+
+    // --- CART ---
+    addToCart: () => {
+        const s = app.state; const d = s.door;
+        const item = {
+            id: Date.now(),
+            title: `${d.name} (${s.config.name})`,
+            details: [
+                `${s.w}" x ${s.h}" • ${s.handing}`,
+                `Jamb: ${s.jamb==='6'?'6 9/16"':'4 9/16"'} • ${s.threshold} / ${s.hinge}`
+            ],
+            price: app.calculateTotal()
+        };
+        if(s.glass) item.details.push(`Glass: ${d.fixedGlass?'Features ':''}${s.glass}${d.hasCaming?' ('+s.caming+')':''}`);
+        if(s.config.sl > 0) item.details.push(`${s.config.sl}x Sidelights (${d.slType})`);
+
+        app.cart.push(item);
+        document.getElementById('cart-count').innerText = `(${app.cart.length})`;
+        alert("Item added to cart!");
+        app.nav('v-size-config');
+        // Reset state for next order could go here
+    },
+    renderCart: () => {
+        const cc = document.getElementById('cart-container'); cc.innerHTML = '';
+        if(app.cart.length === 0) {
+            cc.innerHTML = '<p style="text-align:center; padding:30px; color:var(--muted);">Your cart is empty.</p>';
+            return;
+        }
+        let total = 0;
+        app.cart.forEach(i => {
+            total += i.price;
+            cc.innerHTML += `
+                <div class="card" style="text-align:left; flex-direction:row; justify-content:space-between; margin-bottom:15px;">
+                    <div>
+                        <div class="card-title">${i.title}</div>
+                        <div class="card-desc">${i.details.join('<br>')}</div>
+                    </div>
+                    <div class="card-price" style="font-size:1.2rem;">$${i.price.toLocaleString()}</div>
+                </div>`;
+        });
+        cc.innerHTML += `
+            <div class="total-row" style="margin-top:20px;">
+                <span style="font-weight:bold; font-size:1.2rem;">Grand Total</span>
+                <span class="total-price">$${total.toLocaleString()}</span>
+            </div>
+            <button class="btn" onclick="window.print()">Print Order</button>`;
     }
 };
+
+// Initialize
 app.init();
+// Hook up Collection rendering to the nav button
+document.querySelector('#v-hardware .btn').addEventListener('click', () => {
+    app.renderCollections();
+    app.nav('v-collection');
+});
+// Hook up Cart rendering
+const originalNav = app.nav;
+app.nav = (id) => { if(id === 'v-cart') app.renderCart(); originalNav(id); };
 </script>
 </body>
 </html>
